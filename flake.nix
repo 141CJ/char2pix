@@ -19,6 +19,7 @@
           libva
           pkg-config
           opencv
+          clang
         ];
         shellHook = ''
           export LIBCLANG_PATH="${pkgs.llvmPackages.libclang.lib}/lib";
