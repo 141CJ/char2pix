@@ -59,6 +59,13 @@ fn encode(text: String) -> Result<(), Box<dyn std::error::Error>> {
             index += 1;
         }
     }
+    if !colors.is_empty() {
+        let pixel = img.at_mut::<core::Vec3b>(index)?;
+        pixel[0] = colors.get(0).copied().unwrap_or(0);
+        pixel[1] = colors.get(1).copied().unwrap_or(0);
+        pixel[2] = colors.get(2).copied().unwrap_or(0);
+    }
+
     imgcodecs::imwrite("pixels.png", &img, &core::Vector::new())?;
     Ok(())
 }
