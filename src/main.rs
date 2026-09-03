@@ -38,7 +38,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn encode(text: String) -> Result<(), Box<dyn std::error::Error>> {
-    let text_bytes = text.as_bytes();
+    let text_array = text.chars();
 
     let pixels_needed = (text.len() + 2) / 3;
     let width = (pixels_needed as f64).sqrt().ceil() as i32;
@@ -48,8 +48,8 @@ fn encode(text: String) -> Result<(), Box<dyn std::error::Error>> {
     let mut colors: Vec<u8> = Vec::with_capacity(3);
 
     let mut index = 0;
-    for i in text_bytes.into_iter() {
-        colors.push(*i as u8);
+    for i in text_array.into_iter() {
+        colors.push(i as u8);
         if colors.len() == 3 {
             let pixel = img.at_mut::<core::Vec3b>(index)?;
             pixel[0] = colors[0];
