@@ -40,7 +40,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 fn encode(text: String) -> Result<(), Box<dyn std::error::Error>> {
     let text_array = text.chars();
 
-    let pixels_needed = text.len() / 3;
+    let pixels_needed = (text.len() + 2) / 3;
     let width = (pixels_needed as f64).sqrt().ceil() as i32;
     let height = ((pixels_needed as f64) / (width as f64)).ceil() as i32;
     let mut img = core::Mat::zeros(height, width, core::CV_8UC3)?.to_mat()?;
