@@ -1,8 +1,43 @@
+use std::str::FromStr;
+
+use clap::{Parser, ValueEnum};
 use opencv::core::{self, MatExprTraitConst, MatTrait};
 use opencv::imgcodecs;
 
+#[derive(PartialEq, Copy, Clone, Debug, ValueEnum)]
+enum Mode {
+    Encode,
+    Decode,
+}
+
+impl FromStr for Mode {
+    type Err = String;
+    fn from_str(input: &str) -> Result<Mode, Self::Err> {
+        match input {
+            "encode" => Ok(Mode::Encode),
+            "decode" => Ok(Mode::Decode),
+            _ => Err(format!("'{}' is invalid", input)),
+        }
+    }
+}
+
+#[derive(Parser)]
+struct Cli {
+    mode: Mode,
+    #[arg(short, long)]
+    text: String,
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let text = "meow meow meow meow";
+    let args = Cli::parse();
+    match args.mode {
+        Mode::Encode => encode(args.text)?,
+        Mode::Decode => todo!(),
+    };
+    Ok(())
+}
+
+fn encode(text: String) -> Result<(), Box<dyn std::error::Error>> {
     let text_array = text.chars();
 
     let pixels_needed = text.len() / 3;
