@@ -5,10 +5,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let text = "meow meow meow meow";
     let text_array = text.chars();
 
-    let img_size = ((text.len() / 3) as f64).sqrt().ceil();
+    let pixels_needed = text.len() / 3;
+    let width = (pixels_needed as f64).sqrt().ceil() as i32;
+    let height = ((pixels_needed as f64) / (width as f64)).ceil() as i32;
+    let mut img = core::Mat::zeros(height, width, core::CV_8UC3)?.to_mat()?;
 
     let mut colors: Vec<u8> = Vec::with_capacity(3);
-    let mut img = core::Mat::zeros(img_size as i32, img_size as i32, core::CV_8UC3)?.to_mat()?;
 
     let mut index = 0;
     for i in text_array.into_iter() {
