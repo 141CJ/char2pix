@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+use anyhow::Context;
 use clap::{Parser, ValueEnum};
 use opencv::core::{self, MatExprTraitConst, MatTrait, MatTraitConst};
 use opencv::imgcodecs;
@@ -24,15 +25,23 @@ impl FromStr for Mode {
 #[derive(Parser)]
 struct Cli {
     mode: Mode,
-    #[arg(short, long)]
-    text: String,
+    input: String,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Cli::parse();
+    let path = std::path::Path::new(&args.input);
     match args.mode {
-        Mode::Encode => encode(args.text)?,
-        Mode::Decode => decode(args.text)?,
+        Mode::Encode => {
+            let data = if path.exists() {
+                std::fs::read_to_string(&args.input)
+                    .context(format!("Failed to read file '{}'", args.input))?
+            } else {
+                args.input
+            };
+            encode(data)?
+        }
+        Mode::Decode => decode(args.input)?,
     };
     Ok(())
 }
